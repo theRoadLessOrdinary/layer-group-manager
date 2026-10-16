@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+
+	<name>Expand Recursively</name>
+	<id>layers_cmd_deck.expand_recursive</id>
+
+	<effect>
+		<object-type>all</object-type>
+		<effects-menu>
+			<submenu name="Map's Edge Tools" translatable="no">
+				<submenu name="General" translatable="no">
+					<submenu name="Layers" translatable="no" />
+				</submenu>
+			</submenu>
+		</effects-menu>
+	</effect>
+
+	<script>
+		<command location="inx" interpreter="python">expand_recursive.py</command>
+	</script>
+
+</inkscape-extension>

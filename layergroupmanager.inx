@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+
+	<name>Layer Manager</name>
+	<id>layers_cmd_deck</id>
+
+	<param name="tab" type="notebook">
+        <page name="main" gui-text="Layer Manager">
+            <label appearance="header">Layer Manager v1.6.0</label>
+            <param name="hide_others" type="bool" gui-text="Hide all but selected" appearance="button">false</param>
+            <param name="show_others" type="bool" gui-text="Show all but selected" appearance="button">false</param>
+            <param name="lock_others" type="bool" gui-text="Lock all but selected" appearance="button">false</param>
+            <param name="unlock_others" type="bool" gui-text="Unlock all but selected                    " appearance="button">false</param>
+            <spacer/>
+            <separator/>
+            <spacer/>
+            <param name="toggle_visible" type="bool" gui-text="Toggle Visible" appearance="button">false</param>
+            <param name="toggle_lock" type="bool" gui-text="Toggle Lock" appearance="button">false</param>
+            <spacer/>
+            <separator/>
+            <spacer/>
+            <param name="show_all" type="bool" gui-text="Show All" appearance="button">false</param>
+            <param name="unlock_all" type="bool" gui-text="Unlock All" appearance="button">false</param>
+        </page>
+	</param>
+
+	<effect>
+		<object-type>all</object-type>
+		<effects-menu>
+			<submenu name="Map's Edge Tools" translatable="no">
+				<submenu name="General" translatable="no">
+					<submenu name="Layers" translatable="no" />
+				</submenu>
+			</submenu>
+		</effects-menu>
+	</effect>
+
+	<script>
+		<command location="inx" interpreter="python">layergroupmanager.py</command>
+	</script>
+
+</inkscape-extension>
