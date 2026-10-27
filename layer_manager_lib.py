@@ -336,6 +336,7 @@ def move_first_above_second(svg):
 
         if needs_correction:
             source.set('transform', str((-new_parent_transform) @ old_absolute_transform))
+    return True
 
 
 def expand_recursively(svg):

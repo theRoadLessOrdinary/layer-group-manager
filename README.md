@@ -7,6 +7,7 @@ Inkscape extensions for showing, hiding, locking and arranging layers, groups an
 | **Layer Manager** | General > Layers | `layers_cmd_deck` |
 | **Expand Recursively** | General > Layers | `layers_cmd_deck.expand_recursive` |
 | **Move 1st Selected Above 2nd** | General > Layers | `layers_cmd_deck.move_above` |
+| **Move 1st Selected Above 2nd + Stitch Order** | General > Layers | `layers_cmd_deck.move_above_stitch_order` |
 | **Set Sew Sequence (Trim/Lock Stitch)** | Embroidery > Stitch Settings | `layers_cmd_deck.sew_sequence` |
 
 All are under **Extensions > Map's Edge Tools**. They are also buttons on the [Map's Edge Tool Panel](https://github.com/theRoadLessOrdinary/maps-edge-panel).
@@ -34,6 +35,8 @@ Select one or more layers or groups. Each one, and every layer and group inside 
 
 Select two or more layers or objects. The last one you click is the target. Everything selected before it is stacked directly above it, in click order: the one clicked just before the target ends up next to it, the first one clicked ends up on top.
 
+**Move 1st Selected Above 2nd + Stitch Order** (same menu, also no dialog; in the Tool Panel, the Also change stitch order checkbox beside the button) does the same move, and the moved items also get [Stitch Order](https://github.com/theRoadLessOrdinary/stitch-order) numbers right after the target's, in the order they now stack. The target needs a stitch order number, and the Stitch Order extension must be installed in the same extensions directory.
+
 ## Set Sew Sequence (Trim/Lock Stitch)
 
 Select two or more embroidery objects in the order they will sew. Then:
@@ -45,7 +48,7 @@ Select two or more embroidery objects in the order they will sew. Then:
 
 The trim command uses Ink/Stitch's own trim symbol, read from an Ink/Stitch install in a folder named `inkstitch` (or `inkstitch-dev`) in the same extensions directory.
 
-The three tools other than Layer Manager have no dialog, so each can be bound to a key in **Edit > Preferences > Interface > Keyboard Shortcuts**.
+The tools other than Layer Manager have no dialog, so each can be bound to a key in **Edit > Preferences > Interface > Keyboard Shortcuts**.
 
 ## Requirements
 
