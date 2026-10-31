@@ -6,9 +6,9 @@
 
 	<param name="tab" type="notebook">
         <page name="main" gui-text="Layer Manager">
-            <label appearance="header">Layer Manager v1.6.2</label>
+            <label appearance="header">Layer Manager v1.7.0</label>
             <param name="hide_others" type="bool" gui-text="Hide all but selected" appearance="button">false</param>
-            <param name="show_others" type="bool" gui-text="Show all but selected" appearance="button">false</param>
+            <param name="show_others" type="bool" gui-text="Restore recently hidden" appearance="button">false</param>
             <param name="lock_others" type="bool" gui-text="Lock all but selected" appearance="button">false</param>
             <param name="unlock_others" type="bool" gui-text="Unlock all but selected                    " appearance="button">false</param>
             <spacer/>

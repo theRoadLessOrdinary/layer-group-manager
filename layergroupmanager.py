@@ -1,8 +1,17 @@
 
 import inkex
 import argparse
+import os
+import tempfile
 
-VERSION = "1.6.2"  # Increment this version number with each change
+# Ids that Hide all but selected hid, kept on the root <svg> so Restore
+# recently hidden shows exactly those again.
+HIDDEN_ATTR = 'data-maps-edge-hidden'
+# Exists while a Hide all but selected can be restored; the Tool Panel
+# greys out its Restore button when it is missing.
+HIDE_FLAG_PATH = os.path.join(tempfile.gettempdir(), 'maps_edge_hide_others_active')
+
+VERSION = "1.7.0"  # Increment this version number with each change
 
 
 class LayersCmdDeck(inkex.EffectExtension):
@@ -14,7 +23,7 @@ class LayersCmdDeck(inkex.EffectExtension):
         # strings correctly.
         pars.add_argument('--tab', type=str, default='main', help='Tab to display')
         pars.add_argument('--hide_others', type=inkex.Boolean, default=False, help='Hide other elements')
-        pars.add_argument('--show_others', type=inkex.Boolean, default=False, help='Show other elements')
+        pars.add_argument('--show_others', type=inkex.Boolean, default=False, help='Restore what Hide all but selected hid')
         pars.add_argument('--lock_others', type=inkex.Boolean, default=False, help='Lock other elements')
         pars.add_argument('--unlock_others', type=inkex.Boolean, default=False, help='Unlock other elements')
         pars.add_argument('--toggle_visible', type=inkex.Boolean, default=False, help='Toggle visibility of selected elements')
@@ -91,6 +100,20 @@ class LayersCmdDeck(inkex.EffectExtension):
             if self.options.unlock_all and is_locked(element):
                 set_lock(element, False)
 
+        if self.options.show_others:
+            ids = (self.svg.get(HIDDEN_ATTR) or '').split()
+            if not ids:
+                inkex.errormsg('Nothing to restore. Run Hide all but selected first.')
+            for node_id in ids:
+                node = self.svg.getElementById(node_id)
+                if node is not None and is_hidden(node):
+                    set_display(node, 'inline')
+            self.svg.attrib.pop(HIDDEN_ATTR, None)
+            try:
+                os.remove(HIDE_FLAG_PATH)
+            except OSError:
+                pass
+
         if not selected_elements:
             return
 
@@ -122,6 +145,7 @@ class LayersCmdDeck(inkex.EffectExtension):
         # hidden. Things inside those hidden ones keep their own setting,
         # so showing a layer again brings back what was in it.
         if self.options.hide_others:
+            newly_hidden = []
             chain = set()
             for root in selected_roots:
                 chain.add(root)
@@ -133,12 +157,18 @@ class LayersCmdDeck(inkex.EffectExtension):
                 if element in chain:
                     continue
                 parent = element.getparent()
-                if parent is self.svg or parent in chain:
+                if (parent is self.svg or parent in chain) and not is_hidden(element):
                     set_display(element, 'none')
+                    newly_hidden.append(element.get_id())
+            # Added to any earlier record, so one Restore brings back
+            # everything hidden by Hide runs since the last Restore.
+            ids = (self.svg.get(HIDDEN_ATTR) or '').split()
+            ids += [i for i in newly_hidden if i not in ids]
+            if ids:
+                self.svg.set(HIDDEN_ATTR, ' '.join(ids))
+                with open(HIDE_FLAG_PATH, 'w') as f:
+                    f.write('1')
 
-        if self.options.show_others:
-            for element in others:
-                set_display(element, 'inline')
 
         # Lock all but selected: same idea as hiding. A locked layer or
         # group locks everything inside it, so the ones holding a selected
