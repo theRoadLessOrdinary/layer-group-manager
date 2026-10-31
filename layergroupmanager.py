@@ -2,7 +2,7 @@
 import inkex
 import argparse
 
-VERSION = "1.6.0"  # Increment this version number with each change
+VERSION = "1.6.2"  # Increment this version number with each change
 
 
 class LayersCmdDeck(inkex.EffectExtension):
@@ -116,17 +116,47 @@ class LayersCmdDeck(inkex.EffectExtension):
         others = [e for e in elements if e not in selected_scope]
 
         # Handle the command-line arguments and apply to elements
+        # Hide all but selected: the layers and groups holding a selected
+        # element must stay visible or the element can't be seen, so they
+        # are shown (if hidden) and only the other things beside them are
+        # hidden. Things inside those hidden ones keep their own setting,
+        # so showing a layer again brings back what was in it.
         if self.options.hide_others:
+            chain = set()
+            for root in selected_roots:
+                chain.add(root)
+                chain.update(a for a in root.iterancestors() if a is not self.svg)
+            for node in chain:
+                if is_hidden(node):
+                    set_display(node, 'inline')
             for element in others:
-                set_display(element, 'none')
+                if element in chain:
+                    continue
+                parent = element.getparent()
+                if parent is self.svg or parent in chain:
+                    set_display(element, 'none')
 
         if self.options.show_others:
             for element in others:
                 set_display(element, 'inline')
 
+        # Lock all but selected: same idea as hiding. A locked layer or
+        # group locks everything inside it, so the ones holding a selected
+        # element are unlocked and only the things beside them are locked.
         if self.options.lock_others:
+            chain = set()
+            for root in selected_roots:
+                chain.add(root)
+                chain.update(a for a in root.iterancestors() if a is not self.svg)
+            for node in chain:
+                if is_locked(node):
+                    set_lock(node, False)
             for element in others:
-                set_lock(element, True)
+                if element in chain:
+                    continue
+                parent = element.getparent()
+                if parent is self.svg or parent in chain:
+                    set_lock(element, True)
 
         if self.options.unlock_others:
             for element in others:
